@@ -1,0 +1,65 @@
+version: '3.8'
+
+services:
+  # Base de datos PostgreSQL
+  db:
+    image: postgres:15-alpine
+    container_name: gestion_escolar_db
+    restart: always
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin123
+      POSTGRES_DB: gestion_escolar
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - gestion_network
+
+  # Backend (API)
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: gestion_escolar_backend
+    restart: always
+    ports:
+      - "4000:4000"
+    environment:
+      DATABASE_URL: "postgresql://admin:admin123@db:5432/gestion_escolar?schema=public"
+      JWT_SECRET: "mi-super-secreto-cambiar-en-produccion-12345"
+      PORT: 4000
+    depends_on:
+      - db
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    networks:
+      - gestion_network
+
+  # Frontend (Astro + React)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: gestion_escolar_frontend
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      PUBLIC_API_URL: "http://localhost:4000/api"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    networks:
+      - gestion_network
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
+
+networks:
+  gestion_network:
+    driver: bridge

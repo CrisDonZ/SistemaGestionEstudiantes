@@ -1,0 +1,69 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Usuario {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  nombre    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Estudiante {
+  id               String         @id @default(uuid())
+  nombre           String
+  apellido         String
+  fechaNacimiento  DateTime
+  grupoId          String?
+  grupo            Grupo?         @relation(fields: [grupoId], references: [id])
+  gruposAseo       GrupoAseo[]    @relation("EstudiantesGrupoAseo")
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+}
+
+model Grupo {
+  id          String       @id @default(uuid())
+  nombre      String
+  grado       String
+  estudiantes Estudiante[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model GrupoAseo {
+  id          String       @id @default(uuid())
+  dia         DiaSemana
+  estudiantes Estudiante[] @relation("EstudiantesGrupoAseo")
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model Representante {
+  id        String          @id @default(uuid())
+  tipo      TipoRepresentante
+  nombre    String
+  email     String
+  telefono  String
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+}
+
+enum DiaSemana {
+  LUNES = 1,
+  MARTES = 2,
+  MIERCOLES = 3,
+  JUEVES = 4,
+  VIERNES = 5
+}
+
+enum TipoRepresentante {
+  PADRES
+  ESTUDIANTES
+}
