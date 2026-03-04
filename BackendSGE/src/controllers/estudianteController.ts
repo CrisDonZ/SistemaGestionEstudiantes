@@ -1,12 +1,12 @@
 import { Request, Response } from 'express';
 import prisma from '../config/database';
 
-// Obtener todos los estudiantes
+// Obtener todos los estudiantes DEL USUARIO AUTENTICADO
 export const getAllEstudiantes = async (req: Request, res: Response) => {
   try {
     const estudiantes = await prisma.estudiante.findMany({
-      include: {
-        grupo: true
+      where: {
+        usuarioId: req.userId! // FILTRAR POR USUARIO
       },
       orderBy: {
         nombre: 'asc'
@@ -20,16 +20,15 @@ export const getAllEstudiantes = async (req: Request, res: Response) => {
   }
 };
 
-// Obtener un estudiante por ID
+// Obtener un estudiante por ID (solo si pertenece al usuario)
 export const getEstudianteById = async (req: Request, res: Response) => {
   try {
     const id: string = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
 
-
-    const estudiante = await prisma.estudiante.findUnique({
-      where: { id: id },
-      include: {
-        grupo: true
+    const estudiante = await prisma.estudiante.findFirst({
+      where: { 
+        id: id,
+        usuarioId: req.userId! // VERIFICAR QUE PERTENECE AL USUARIO
       }
     });
 
@@ -44,51 +43,29 @@ export const getEstudianteById = async (req: Request, res: Response) => {
   }
 };
 
-// Crear un nuevo estudiante
+// Crear un nuevo estudiante PARA EL USUARIO AUTENTICADO
 export const createEstudiante = async (req: Request, res: Response) => {
   try {
     const nombre = req.body.nombre;
     const apellido = req.body.apellido;
     const fechaNacimiento = req.body.fechaNacimiento;
-    const grupoId = req.body.grupoId;
+    const acudiente = req.body.acudiente;
 
     // Validar datos requeridos
-    if (!nombre || !apellido || !fechaNacimiento) {
+    if (!nombre || !apellido || !fechaNacimiento || !acudiente) {
       return res.status(400).json({ 
-        error: 'Nombre, apellido y fecha de nacimiento son requeridos' 
+        error: 'Nombre, apellido, fecha de nacimiento y acudiente son requeridos' 
       });
     }
-    // Validar que grupoid exista
 
-    if (grupoId) {
-      const grupo = await prisma.grupo.findUnique({
-        where: { id: grupoId }
-      })
-      if (!grupo) {
-        return res.status(400).json({ 
-          error: 'El grupoId proporcionado no existe' 
-        });
-      }
-    };
-
-
-    //Validar que la fecha de nacimiento sea una fecha válida
-    const fechaNac = new Date(fechaNacimiento);
-    if (isNaN(fechaNac.getTime())) {
-      return res.status(400).json({
-        error: 'La fecha de nacimiento no es una fecha válida'
-      });
-    }
-    // Crear estudiante
+    // Crear estudiante CON EL ID DEL USUARIO
     const estudiante = await prisma.estudiante.create({
       data: {
         nombre: nombre,
         apellido: apellido,
         fechaNacimiento: new Date(fechaNacimiento),
-        grupoId: grupoId || null
-      },
-      include: {
-        grupo: true
+        acudiente: acudiente,
+        usuarioId: req.userId! // ASIGNAR AL USUARIO AUTENTICADO
       }
     });
 
@@ -102,18 +79,21 @@ export const createEstudiante = async (req: Request, res: Response) => {
   }
 };
 
-// Actualizar un estudiante
+// Actualizar un estudiante (solo si pertenece al usuario)
 export const updateEstudiante = async (req: Request, res: Response) => {
   try {
     const id: string = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
     const nombre = req.body.nombre;
     const apellido = req.body.apellido;
     const fechaNacimiento = req.body.fechaNacimiento;
-    const grupoId = req.body.grupoId;
+    const acudiente = req.body.acudiente;
 
-    // Verificar que el estudiante existe
-    const existingEstudiante = await prisma.estudiante.findUnique({
-      where: { id: id }
+    // Verificar que el estudiante existe Y PERTENECE AL USUARIO
+    const existingEstudiante = await prisma.estudiante.findFirst({
+      where: { 
+        id: id,
+        usuarioId: req.userId!
+      }
     });
 
     if (!existingEstudiante) {
@@ -126,15 +106,12 @@ export const updateEstudiante = async (req: Request, res: Response) => {
     if (nombre) dataToUpdate.nombre = nombre;
     if (apellido) dataToUpdate.apellido = apellido;
     if (fechaNacimiento) dataToUpdate.fechaNacimiento = new Date(fechaNacimiento);
-    if (grupoId !== undefined) dataToUpdate.grupoId = grupoId;
+    if (acudiente) dataToUpdate.acudiente = acudiente;
 
     // Actualizar estudiante
     const estudiante = await prisma.estudiante.update({
       where: { id: id },
-      data: dataToUpdate,
-      include: {
-        grupo: true
-      }
+      data: dataToUpdate
     });
 
     res.json({
@@ -147,15 +124,17 @@ export const updateEstudiante = async (req: Request, res: Response) => {
   }
 };
 
-// Eliminar un estudiante
+// Eliminar un estudiante (solo si pertenece al usuario)
 export const deleteEstudiante = async (req: Request, res: Response) => {
   try {
     const id: string = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
 
-
-    // Verificar que el estudiante existe
-    const estudiante = await prisma.estudiante.findUnique({
-      where: { id: id }
+    // Verificar que el estudiante existe Y PERTENECE AL USUARIO
+    const estudiante = await prisma.estudiante.findFirst({
+      where: { 
+        id: id,
+        usuarioId: req.userId!
+      }
     });
 
     if (!estudiante) {
@@ -174,15 +153,15 @@ export const deleteEstudiante = async (req: Request, res: Response) => {
   }
 };
 
-// Obtener cumpleaños del mes actual
+// Obtener cumpleaños del mes actual DEL USUARIO AUTENTICADO
 export const getCumpleanosDelMes = async (req: Request, res: Response) => {
   try {
     const ahora = new Date();
     const mesActual = ahora.getMonth() + 1;
 
     const estudiantes = await prisma.estudiante.findMany({
-      include: {
-        grupo: true
+      where: {
+        usuarioId: req.userId! // FILTRAR POR USUARIO
       }
     });
 

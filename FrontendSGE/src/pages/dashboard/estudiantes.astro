@@ -1,0 +1,18 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import EstudiantesPage from '../../components/dashboard/EstudiantesPage';
+---
+
+<Layout title="Estudiantes - Sistema de Gestión Escolar">
+  <EstudiantesPage client:load />
+</Layout>
+
+<script>
+  // Verificar autenticación
+  if (typeof window !== 'undefined') {
+    const token = localStorage.getItem('auth_token');
+    if (!token) {
+      window.location.href = '/login';
+    }
+  }
+</script>

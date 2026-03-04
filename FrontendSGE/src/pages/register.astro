@@ -1,0 +1,30 @@
+---
+import Layout from '../layouts/Layout.astro';
+import RegisterForm from '../components/auth/RegisterForm';
+---
+
+<Layout title="Registro - Sistema de Gestión Escolar">
+  <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-500 to-purple-600 px-4 py-8">
+    <div class="bg-white p-6 sm:p-8 rounded-lg shadow-2xl w-full max-w-md">
+      <div class="text-center mb-6">
+        <h1 class="text-2xl sm:text-3xl font-bold text-gray-800 mb-2">
+          Crear Cuenta
+        </h1>
+        <p class="text-gray-600 text-sm sm:text-base">
+          Regístrate para comenzar
+        </p>
+      </div>
+      
+      <RegisterForm client:load />
+      
+      <div class="mt-6 text-center">
+        <p class="text-gray-600 text-sm">
+          ¿Ya tienes cuenta?{' '}
+          <a href="/login" class="text-blue-600 hover:text-blue-800 font-semibold">
+            Inicia sesión aquí
+          </a>
+        </p>
+      </div>
+    </div>
+  </div>
+</Layout>

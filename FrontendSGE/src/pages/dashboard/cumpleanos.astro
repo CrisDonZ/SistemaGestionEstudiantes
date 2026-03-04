@@ -1,0 +1,17 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import CumpleanosPage from '../../components/dashboard/CumpleanosPage';
+---
+
+<Layout title="Cumpleaños - Sistema de Gestión Escolar">
+  <CumpleanosPage client:load />
+</Layout>
+
+<script>
+  if (typeof window !== 'undefined') {
+    const token = localStorage.getItem('auth_token');
+    if (!token) {
+      window.location.href = '/login';
+    }
+  }
+</script>

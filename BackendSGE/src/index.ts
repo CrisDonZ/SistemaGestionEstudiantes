@@ -2,27 +2,48 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 
-//Importar rutas
+// Cargar variables de entorno PRIMERO
+dotenv.config();
+
+// Importar rutas
 import authRoutes from './routes/authRoutes';
-import grupoRoutes from './routes/grupoRoutes';
 import estudianteRoutes from './routes/estudianteRoutes';
 import grupoAseoRoutes from './routes/grupoAseoRoutes';
+import representanteRoutes from './routes/representanteRoutes';
 
 
-// Cargar variables de entorno
-dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 4000;
 
-// Middlewares globales
-app.use(cors());
-app.use(express.json());
+// ===== MIDDLEWARES GLOBALES (ORDEN IMPORTANTÍSIMO) =====
 
-// Registrar rutas
+// 1. CORS - Permitir peticiones desde el frontend
+app.use(cors({
+  origin: ['http://localhost:3000', 'http://127.0.0.1:3000'],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
+// 2. Body parsers - CRÍTICO: Debe estar ANTES de las rutas
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// 3. Logging (para debugging)
+app.use((req, res, next) => {
+  console.log(`\n📨 ${req.method} ${req.path}`);
+  console.log('Headers:', req.headers);
+  console.log('Body:', req.body);
+  next();
+});
+
+// ===== RUTAS =====
 app.use('/api/auth', authRoutes);
-app.use('/api/grupos', grupoRoutes);
 app.use('/api/estudiantes', estudianteRoutes);
 app.use('/api/grupos-aseo', grupoAseoRoutes);
+app.use('/api/representantes', representanteRoutes);
+
+
 
 // Ruta de prueba
 app.get('/api/health', (req, res) => {
@@ -33,8 +54,7 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-
-//Ruta para listar todos los endpoints disponibles
+// Ruta para documentación
 app.get('/api', (req, res) => {
   res.json({
     message: 'Sistema de Gestión Escolar API',
@@ -52,13 +72,6 @@ app.get('/api', (req, res) => {
         update: 'PUT /api/estudiantes/:id',
         delete: 'DELETE /api/estudiantes/:id',
         cumpleanos: 'GET /api/estudiantes/cumpleanos'
-      },
-      grupos: {
-        getAll: 'GET /api/grupos',
-        getById: 'GET /api/grupos/:id',
-        create: 'POST /api/grupos',
-        update: 'PUT /api/grupos/:id',
-        delete: 'DELETE /api/grupos/:id'
       },
       gruposAseo: {
         getAll: 'GET /api/grupos-aseo',
@@ -78,7 +91,16 @@ app.get('/api', (req, res) => {
   });
 });
 
-//Manejador de rutas no encontradas
+// Manejador de errores global
+app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+  console.error('❌ Error global:', err);
+  res.status(500).json({ 
+    error: 'Error interno del servidor',
+    message: err.message 
+  });
+});
+
+// Manejador de rutas no encontradas
 app.use((req, res) => {
   res.status(404).json({ 
     error: 'Ruta no encontrada',
@@ -86,9 +108,9 @@ app.use((req, res) => {
   });
 });
 
-
 // Iniciar servidor
 app.listen(PORT, () => {
-  console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
-  console.log(`📚 Documentación disponible en http://localhost:${PORT}/api`);
+  console.log(`\n🚀 Servidor corriendo en http://localhost:${PORT}`);
+  console.log(`📚 Documentación en http://localhost:${PORT}/api`);
+  console.log(`✅ CORS habilitado para: http://localhost:3000\n`);
 });

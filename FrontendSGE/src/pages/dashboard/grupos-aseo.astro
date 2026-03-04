@@ -1,0 +1,17 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import GruposAseoPage from '../../components/dashboard/GruposAseoPage';
+---
+
+<Layout title="Grupos de Aseo - Sistema de Gestión Escolar">
+  <GruposAseoPage client:load />
+</Layout>
+
+<script>
+  if (typeof window !== 'undefined') {
+    const token = localStorage.getItem('auth_token');
+    if (!token) {
+      window.location.href = '/login';
+    }
+  }
+</script>

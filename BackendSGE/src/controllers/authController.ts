@@ -129,4 +129,6 @@ export const getProfile = async (req: Request, res: Response) => {
     console.error('Error obteniendo perfil:', error);
     res.status(500).json({ error: 'Error al obtener perfil' });
   }
+
+  
 };

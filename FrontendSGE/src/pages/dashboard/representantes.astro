@@ -1,0 +1,17 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import RepresentantesPage from '../../components/dashboard/RepresentantesPage';
+---
+
+<Layout title="Representantes - Sistema de Gestión Escolar">
+  <RepresentantesPage client:load />
+</Layout>
+
+<script>
+  if (typeof window !== 'undefined') {
+    const token = localStorage.getItem('auth_token');
+    if (!token) {
+      window.location.href = '/login';
+    }
+  }
+</script>

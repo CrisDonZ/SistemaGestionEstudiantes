@@ -8,59 +8,65 @@ datasource db {
 }
 
 model Usuario {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  password  String
-  nombre    String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id             String          @id @default(uuid())
+  email          String          @unique
+  password       String
+  nombre         String
+  estudiantes    Estudiante[]
+  gruposAseo     GrupoAseo[]
+  representantes Representante[]
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
 }
 
 model Estudiante {
-  id               String         @id @default(uuid())
-  nombre           String
-  apellido         String
-  fechaNacimiento  DateTime
-  grupoId          String?
-  grupo            Grupo?         @relation(fields: [grupoId], references: [id])
-  gruposAseo       GrupoAseo[]    @relation("EstudiantesGrupoAseo")
-  createdAt        DateTime       @default(now())
-  updatedAt        DateTime       @updatedAt
-}
+  id              String      @id @default(uuid())
+  nombre          String
+  apellido        String
+  fechaNacimiento DateTime
+  acudiente       String
+  usuarioId       String
+  usuario         Usuario     @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  gruposAseo      GrupoAseo[] @relation("EstudiantesGrupoAseo")
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
 
-model Grupo {
-  id          String       @id @default(uuid())
-  nombre      String
-  grado       String
-  estudiantes Estudiante[]
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
+  @@index([usuarioId])
 }
 
 model GrupoAseo {
   id          String       @id @default(uuid())
   dia         DiaSemana
+  usuarioId   String
+  usuario     Usuario      @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
   estudiantes Estudiante[] @relation("EstudiantesGrupoAseo")
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
+
+  @@index([usuarioId])
+  @@unique([usuarioId, dia])
 }
 
 model Representante {
-  id        String          @id @default(uuid())
+  id        String            @id @default(uuid())
   tipo      TipoRepresentante
   nombre    String
   email     String
   telefono  String
-  createdAt DateTime        @default(now())
-  updatedAt DateTime        @updatedAt
+  usuarioId String
+  usuario   Usuario           @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+
+  @@index([usuarioId])
 }
 
 enum DiaSemana {
-  LUNES = 1,
-  MARTES = 2,
-  MIERCOLES = 3,
-  JUEVES = 4,
-  VIERNES = 5
+  LUNES
+  MARTES
+  MIERCOLES
+  JUEVES
+  VIERNES
 }
 
 enum TipoRepresentante {

@@ -11,4 +11,5 @@ router.post('/login', login);
 // Rutas protegidas (requieren autenticación)
 router.get('/profile', authMiddleware, getProfile);
 
+
 export default router;

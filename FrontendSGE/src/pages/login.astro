@@ -1,0 +1,32 @@
+---
+import Layout from '../layouts/Layout.astro';
+import LoginForm from '../components/auth/LoginForm';
+---
+
+<Layout title="Login - Sistema de Gestión Escolar">
+  <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-500 to-green-600">
+    <div class="bg-white p-8 rounded-lg shadow-2xl w-full max-w-md">
+      <div class="text-center mb-8">
+        <h1 class="text-3xl font-bold text-gray-800 mb-2">
+          Sistema de Gestión Escolar
+        </h1>
+        <p class="text-gray-600">Inicia sesión para continuar</p>
+      </div>
+      
+      <LoginForm client:load />
+      
+      <div class="mt-6 text-center text-sm text-gray-600">
+        <p>Usuario demo: admin@escuela.com</p>
+        <p>Contraseña: admin123</p>
+      </div>
+      <div class="mt-4 text-center">
+        <p class="text-gray-600 text-sm">
+          ¿No tienes cuenta?{' '}
+          <a href="/register" class="text-blue-600 hover:text-blue-800 font-semibold">
+            Regístrate aquí
+          </a>
+        </p>
+      </div>
+    </div>
+  </div>
+</Layout>
