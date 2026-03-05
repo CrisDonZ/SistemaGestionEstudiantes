@@ -24,7 +24,10 @@ model Estudiante {
   nombre          String
   apellido        String
   fechaNacimiento DateTime
+  telefono        String
   acudiente       String
+  telefonoAcu     String
+  fotoUrl         String?
   usuarioId       String
   usuario         Usuario     @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
   gruposAseo      GrupoAseo[] @relation("EstudiantesGrupoAseo")

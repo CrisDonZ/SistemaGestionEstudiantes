@@ -9,7 +9,10 @@ export interface Estudiante {
   nombre: string;
   apellido: string;
   fechaNacimiento: string;
-  acudiente: string; // NUEVO CAMPO
+  acudiente: string;
+  telefono: string;
+  telefonoAcu: string;
+  fotoUrl?: string;
 }
 
 export interface GrupoAseo {

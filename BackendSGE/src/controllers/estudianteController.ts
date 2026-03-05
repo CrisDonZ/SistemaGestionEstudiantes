@@ -50,11 +50,14 @@ export const createEstudiante = async (req: Request, res: Response) => {
     const apellido = req.body.apellido;
     const fechaNacimiento = req.body.fechaNacimiento;
     const acudiente = req.body.acudiente;
+    const telefono = req.body.telefono;
+    const telefonoAcu = req.body.telefonoAcu;
+    const fotoUrl = req.body.fotoUrl;
 
     // Validar datos requeridos
-    if (!nombre || !apellido || !fechaNacimiento || !acudiente) {
+    if (!nombre || !apellido || !fechaNacimiento || !acudiente || !telefono || !telefonoAcu) {
       return res.status(400).json({ 
-        error: 'Nombre, apellido, fecha de nacimiento y acudiente son requeridos' 
+        error: 'Nombre, apellido, fecha de nacimiento, acudiente y teléfonos son requeridos' 
       });
     }
 
@@ -65,7 +68,10 @@ export const createEstudiante = async (req: Request, res: Response) => {
         apellido: apellido,
         fechaNacimiento: new Date(fechaNacimiento),
         acudiente: acudiente,
-        usuarioId: req.userId! // ASIGNAR AL USUARIO AUTENTICADO
+        telefono: telefono,
+        telefonoAcu: telefonoAcu,
+        fotoUrl: fotoUrl || null,
+        usuarioId: req.userId!
       }
     });
 
@@ -80,6 +86,7 @@ export const createEstudiante = async (req: Request, res: Response) => {
 };
 
 // Actualizar un estudiante (solo si pertenece al usuario)
+// Actualizar un estudiante (solo si pertenece al usuario)
 export const updateEstudiante = async (req: Request, res: Response) => {
   try {
     const id: string = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
@@ -87,6 +94,9 @@ export const updateEstudiante = async (req: Request, res: Response) => {
     const apellido = req.body.apellido;
     const fechaNacimiento = req.body.fechaNacimiento;
     const acudiente = req.body.acudiente;
+    const telefono = req.body.telefono;
+    const telefonoAcu = req.body.telefonoAcu;
+    const fotoUrl = req.body.fotoUrl;
 
     // Verificar que el estudiante existe Y PERTENECE AL USUARIO
     const existingEstudiante = await prisma.estudiante.findFirst({
@@ -107,6 +117,9 @@ export const updateEstudiante = async (req: Request, res: Response) => {
     if (apellido) dataToUpdate.apellido = apellido;
     if (fechaNacimiento) dataToUpdate.fechaNacimiento = new Date(fechaNacimiento);
     if (acudiente) dataToUpdate.acudiente = acudiente;
+    if (telefono) dataToUpdate.telefono = telefono;
+    if (telefonoAcu) dataToUpdate.telefonoAcu = telefonoAcu;
+    if (fotoUrl !== undefined) dataToUpdate.fotoUrl = fotoUrl;
 
     // Actualizar estudiante
     const estudiante = await prisma.estudiante.update({
@@ -123,7 +136,6 @@ export const updateEstudiante = async (req: Request, res: Response) => {
     res.status(500).json({ error: 'Error al actualizar estudiante' });
   }
 };
-
 // Eliminar un estudiante (solo si pertenece al usuario)
 export const deleteEstudiante = async (req: Request, res: Response) => {
   try {

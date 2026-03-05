@@ -25,13 +25,16 @@ async function main() {
 
   console.log('✅ Usuario administrador creado:', admin.email);
 
-  // Crear estudiantes para el admin
+  // Crear estudiantes para el admin CON TELÉFONOS
   const estudiante1 = await prisma.estudiante.create({
     data: {
       nombre: 'Juan',
       apellido: 'Pérez',
       fechaNacimiento: new Date('2015-03-15'),
       acudiente: 'María Pérez',
+      telefono: '3001234567',
+      telefonoAcu: '3009876543',
+      fotoUrl: null,
       usuarioId: admin.id
     }
   });
@@ -42,6 +45,9 @@ async function main() {
       apellido: 'García',
       fechaNacimiento: new Date('2016-07-20'),
       acudiente: 'Carlos García',
+      telefono: '3002345678',
+      telefonoAcu: '3008765432',
+      fotoUrl: null,
       usuarioId: admin.id
     }
   });
@@ -52,6 +58,9 @@ async function main() {
       apellido: 'Martínez',
       fechaNacimiento: new Date('2015-11-10'),
       acudiente: 'Laura Martínez',
+      telefono: '3003456789',
+      telefonoAcu: '3007654321',
+      fotoUrl: null,
       usuarioId: admin.id
     }
   });
@@ -105,13 +114,16 @@ async function main() {
 
   console.log('✅ Usuario profesor creado:', user2.email);
 
-  // Crear un estudiante para el profesor
+  // Crear un estudiante para el profesor CON TELÉFONOS
   await prisma.estudiante.create({
     data: {
       nombre: 'Pedro',
       apellido: 'López',
       fechaNacimiento: new Date('2016-05-20'),
       acudiente: 'Carmen López',
+      telefono: '3004567890',
+      telefonoAcu: '3006543210',
+      fotoUrl: null,
       usuarioId: user2.id
     }
   });
