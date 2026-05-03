@@ -65,7 +65,7 @@ export default function DashboardContent() {
         <header className="bg-white bg-opacity-95 shadow backdrop-blur-sm sticky top-0 z-10">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
             <h1 className="text-2xl font-bold text-gray-900">
-              🏫 Sistema de Gestión Escolar
+              Sistema de Gestión Escolar
             </h1>
             <div className="flex items-center space-x-4">
               <span className="text-gray-700 flex items-center">

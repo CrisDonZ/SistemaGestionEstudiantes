@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { estudiantesAPI } from '../../utils/api';
 import { removeToken } from '../../utils/auth';
+import DetalleEstudianteModal from './DetalleEstudianteModal';
 
 interface Estudiante {
   id: string;
@@ -30,6 +31,8 @@ export default function EstudiantesPage() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [error, setError] = useState('');
   const [previewFoto, setPreviewFoto] = useState<string>('');
+  const [showDetalleModal, setShowDetalleModal] = useState(false);
+  const [estudianteSeleccionado, setEstudianteSeleccionado] = useState<Estudiante | null>(null);
 
   // Formulario
   const [formData, setFormData] = useState({
@@ -233,6 +236,15 @@ export default function EstudiantesPage() {
     );
   }
 
+  const handleVerDetalle = (estudiante: Estudiante) => {
+  setEstudianteSeleccionado(estudiante);
+    setShowDetalleModal(true);
+  };
+
+  const handleCerrarDetalle = () => {
+    setShowDetalleModal(false);
+    setEstudianteSeleccionado(null);
+  };
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -249,7 +261,7 @@ export default function EstudiantesPage() {
               Volver
             </a>
             <h1 className="text-2xl font-bold text-gray-900">
-              👥 Gestión de Estudiantes
+              Gestión de Estudiantes
             </h1>
           </div>
           <button
@@ -305,7 +317,8 @@ export default function EstudiantesPage() {
             {estudiantes.map((estudiante) => (
               <div
                 key={estudiante.id}
-                className="bg-white rounded-lg shadow-md hover:shadow-xl transition-all transform hover:-translate-y-1 p-6"
+                onClick={() => handleVerDetalle(estudiante)}
+                className="bg-white rounded-lg shadow-md hover:shadow-xl transition p-6 cursor-pointer"
               >
                 {/* Foto/Avatar */}
                 <div className="flex items-center space-x-4 mb-4">
@@ -364,7 +377,10 @@ export default function EstudiantesPage() {
                 {/* Botones de acción */}
                 <div className="flex space-x-2 pt-4 border-t">
                   <button
-                    onClick={() => openModal(estudiante)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      openModal(estudiante);
+                    }}
                     className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded transition text-sm flex items-center justify-center"
                   >
                     <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -373,7 +389,10 @@ export default function EstudiantesPage() {
                     Editar
                   </button>
                   <button
-                    onClick={() => handleDelete(estudiante.id)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDelete(estudiante.id);
+                    }}
                     className="flex-1 bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded transition text-sm flex items-center justify-center"
                   >
                     <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -564,6 +583,13 @@ export default function EstudiantesPage() {
             </form>
           </div>
         </div>
+      )}
+
+      {showDetalleModal && estudianteSeleccionado && (
+        <DetalleEstudianteModal
+          estudiante={estudianteSeleccionado}
+          onClose={handleCerrarDetalle}
+        />
       )}
     </div>
   );

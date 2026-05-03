@@ -20,7 +20,7 @@ services:
   # Backend (API)
   backend:
     build:
-      context: ./backend
+      context: ./BackendSGE
       dockerfile: Dockerfile
     container_name: gestion_escolar_backend
     restart: always

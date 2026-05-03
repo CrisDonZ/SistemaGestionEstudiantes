@@ -108,3 +108,26 @@ export const representantesAPI = {
     method: 'DELETE',
   }),
 };
+
+// API de Materias
+export const materiasAPI = {
+  getByEstudiante: (estudianteId: string) => fetchAPI(`/materias/estudiante/${estudianteId}`),
+  getResumen: (estudianteId: string) => fetchAPI(`/materias/resumen/${estudianteId}`),
+  importarCSV: (estudianteId: string, materias: any[]) => fetchAPI('/materias/importar', {
+    method: 'POST',
+    body: JSON.stringify({ estudianteId, materias }),
+  }),
+};
+
+// API de Mensajes
+export const mensajesAPI = {
+  enviar: (data: any) => fetchAPI('/mensajes/enviar', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  }),
+  enviarCircular: (mensaje: string, estudianteIds: string[]) => fetchAPI('/mensajes/circular', {
+    method: 'POST',
+    body: JSON.stringify({ mensaje, estudianteIds }),
+  }),
+  getHistorial: (estudianteId: string) => fetchAPI(`/mensajes/historial/${estudianteId}`),
+};

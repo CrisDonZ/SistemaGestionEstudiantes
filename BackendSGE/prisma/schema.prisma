@@ -31,6 +31,8 @@ model Estudiante {
   usuarioId       String
   usuario         Usuario     @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
   gruposAseo      GrupoAseo[] @relation("EstudiantesGrupoAseo")
+  materias        Materia[]         
+  mensajes        MensajeEnviado[] 
   createdAt       DateTime    @default(now())
   updatedAt       DateTime    @updatedAt
 
@@ -75,4 +77,40 @@ enum DiaSemana {
 enum TipoRepresentante {
   PADRES
   ESTUDIANTES
+}
+
+model Materia {
+  id            String   @id @default(uuid())
+  nombre        String
+  estudianteId  String
+  estudiante    Estudiante @relation(fields: [estudianteId], references: [id], onDelete: Cascade)
+  calificacion  Float
+  periodo       String   // Ej: "Primer Periodo", "Segundo Periodo"
+  usuarioId     String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([estudianteId])
+  @@index([usuarioId])
+}
+
+model MensajeEnviado {
+  id            String   @id @default(uuid())
+  tipo          TipoMensaje
+  mensaje       String
+  estudianteId  String
+  estudiante    Estudiante @relation(fields: [estudianteId], references: [id], onDelete: Cascade)
+  telefono      String
+  usuarioId     String
+  fechaEnvio    DateTime @default(now())
+  createdAt     DateTime @default(now())
+
+  @@index([estudianteId])
+  @@index([usuarioId])
+}
+
+enum TipoMensaje {
+  FELICITACION
+  DISCIPLINA
+  CIRCULAR
 }

@@ -10,6 +10,7 @@ import authRoutes from './routes/authRoutes';
 import estudianteRoutes from './routes/estudianteRoutes';
 import grupoAseoRoutes from './routes/grupoAseoRoutes';
 import representanteRoutes from './routes/representanteRoutes';
+import mensajeRoutes from './routes/mensajeRoutes';
 
 
 const app = express();
@@ -42,6 +43,8 @@ app.use('/api/auth', authRoutes);
 app.use('/api/estudiantes', estudianteRoutes);
 app.use('/api/grupos-aseo', grupoAseoRoutes);
 app.use('/api/representantes', representanteRoutes);
+app.use('/api/mensajes', mensajeRoutes);
+
 
 
 

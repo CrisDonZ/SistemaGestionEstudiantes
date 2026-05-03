@@ -122,7 +122,7 @@ export default function CumpleanosPage() {
               ← Volver
             </a>
             <h1 className="text-2xl font-bold text-gray-900">
-              🎂 Cumpleaños
+              Cumpleaños
             </h1>
           </div>
           <button

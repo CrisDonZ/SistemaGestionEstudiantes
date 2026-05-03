@@ -22,6 +22,15 @@ export interface GrupoAseo {
   estudiantes?: Estudiante[];
 }
 
+export interface MensajeEnviado {
+  id: string;
+  tipo: 'FELICITACION' | 'DISCIPLINA' | 'CIRCULAR';
+  mensaje: string;
+  telefono: string;
+  fechaEnvio: string;
+}
+
+
 export interface Representante {
   id: string;
   tipo: 'PADRES' | 'ESTUDIANTES';
