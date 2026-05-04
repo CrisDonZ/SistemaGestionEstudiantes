@@ -20,7 +20,11 @@ const PORT = process.env.PORT || 4000;
 
 // 1. CORS - Permitir peticiones desde el frontend
 app.use(cors({
-  origin: ['http://localhost:3000', 'http://127.0.0.1:3000'],
+  origin: [
+    'http://localhost:3000', 
+    'http://127.0.0.1:3000',
+    process.env.FRONTEND_URL || ''
+  ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
